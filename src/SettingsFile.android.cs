@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using Android.App;
+using System.Threading.Tasks;
+using Android.Content;
+using Android.Content.Res;
+using Plugin.CurrentActivity;
 
 namespace Plugin.SettingsFile
 {
@@ -13,20 +17,20 @@ namespace Plugin.SettingsFile
     {
         private const string ConfigurationFilePath = "config.json";
 
-        private readonly Func<Context> _contextProvider;
+        private readonly Context _contextProvider;
 
         private Stream _readingStream;
 
-        public AndroidConfigurationStreamProvider(Func<Context> contextProvider)
+        public SettingsFileImplementation()
         {
-            _contextProvider = contextProvider;
+            _contextProvider = CrossCurrentActivity.Current.AppContext;
         }
 
         public Task<Stream> GetStreamAsync()
         {
             ReleaseUnmanagedResources();
 
-            AssetManager assets = _contextProvider().Assets;
+            AssetManager assets = _contextProvider.Assets;
 
             _readingStream = assets.Open(ConfigurationFilePath);
 
