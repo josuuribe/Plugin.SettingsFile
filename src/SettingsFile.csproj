@@ -29,7 +29,6 @@
     <LangVersion>latest</LangVersion>
     
     <!--TODO: Fill these in-->
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/josuuribe/Plugin.SettingsFile</PackageProjectUrl>
     <RepositoryUrl>https://github.com/josuuribe/Plugin.SettingsFile.git</RepositoryUrl>
     <PackageReleaseNotes></PackageReleaseNotes>
