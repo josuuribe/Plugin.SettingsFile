@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Plugin.SettingsFile;
+using System.Threading;
 
 namespace Plugin.SettingsFile
 {
@@ -16,7 +17,17 @@ namespace Plugin.SettingsFile
 
         private Stream _readingStream;
 
-        public Task<Stream> GetStreamAsync()
+        public Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
+        }
+
+        public Task<T> GetConfiguration<T>() where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
+        }
+
+        private Task<Stream> GetStreamAsync()
         {
             ReleaseUnmanagedResources();
             _readingStream = new FileStream(ConfigurationFilePath, FileMode.Open, FileAccess.Read);

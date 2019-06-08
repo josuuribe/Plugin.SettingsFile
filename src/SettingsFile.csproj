@@ -45,6 +45,8 @@
     <Copyright>Copyright 2019</Copyright>
     <Company>RaraAvis</Company>
     <RepositoryType>Git</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Label="SourceLink">

@@ -1,13 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Plugin.SettingsFile
 {
     public interface ISettingsFile
     {
         //Task<T> GetAsync<T>(CancellationToken cancellationToken) where T : class;
-        Task<Stream> GetStreamAsync();
+        Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class;
+        Task<T> GetConfiguration<T>() where T : class;
     }
 
     /*

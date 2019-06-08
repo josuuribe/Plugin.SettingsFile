@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Plugin.SettingsFile;
 using Windows.Storage;
+using System.Threading;
 
 namespace Plugin.SettingsFile
 {
@@ -19,7 +20,17 @@ namespace Plugin.SettingsFile
 
         private const string ConfigurationFilePath = "ms-appx:///Assets/config.json";
 
-        public async Task<Stream> GetStreamAsync()
+        public Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
+        }
+
+        public Task<T> GetConfiguration<T>() where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
+        }
+
+        private async Task<Stream> GetStreamAsync()
         {
             ReleaseUnmanagedResources();
 

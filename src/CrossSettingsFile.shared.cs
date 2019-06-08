@@ -10,7 +10,7 @@ namespace Plugin.SettingsFile
     /// </summary>
     public static class CrossSettingsFile
     {
-        static Lazy<ISettingsFile> implementation = new Lazy<ISettingsFile>(() => CreateSettingsFile(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
+        private static Lazy<ISettingsFile> implementation = new Lazy<ISettingsFile>(() => CreateSettingsFile(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
 
         /// <summary>
         /// Gets if the plugin is supported on the current platform.
@@ -33,15 +33,13 @@ namespace Plugin.SettingsFile
             }
         }
 
-        static ISettingsFile CreateSettingsFile()
+        private static ISettingsFile CreateSettingsFile()
         {
 #if NETSTANDARD1_0 || NETSTANDARD2_0
             return null;
 #else
 #pragma warning disable IDE0022 // Use expression body for methods
-            ISettingsFile settings = new SettingsFileImplementation();
-            ConfigurationManager.Initialize(settings);
-            return settings;
+            return new SettingsFileImplementation();
 #pragma warning restore IDE0022 // Use expression body for methods
 #endif
         }
@@ -52,23 +50,23 @@ namespace Plugin.SettingsFile
 
     }
 
-    internal sealed class ConfigurationManager
+    internal static class ConfigurationManager
     {
-        private readonly SemaphoreSlim _semaphoreSlim;
+        private static readonly SemaphoreSlim _semaphoreSlim;
 
         //private static IConfigurationStreamProviderFactory _factory;
 
         private static ISettingsFile settingsFile = null;
 
-        private bool _initialized;
+        private static bool _initialized;
         //private Configuration _configuration;
 
-        protected ConfigurationManager()
+        static ConfigurationManager()
         {
             _semaphoreSlim = new SemaphoreSlim(1, 1);
         }
 
-        private static ConfigurationManager Instance { get; } = new ConfigurationManager();
+        //private static ConfigurationManager Instance { get; } = new ConfigurationManager();
 
         /*
         public static void Initialize(IConfigurationStreamProviderFactory factory)
@@ -77,15 +75,15 @@ namespace Plugin.SettingsFile
         }
         */
 
-        public static void Initialize(ISettingsFile settings)
-        {
-            settingsFile = settings;
-        }
+        //public static void Initialize(ISettingsFile settings)
+        //{
+        //    settingsFile = settings;
+        //}
 
-        public async Task<T> GetAsync<T>(CancellationToken cancellationToken)
-            where T : class
+        public static async Task<T> GetAsync<T>(Task<Stream> stream, CancellationToken cancellationToken)
+    where T : class
         {
-            var configuration = await InitializeAsync<T>(cancellationToken).ConfigureAwait(false);
+            var configuration = await DeserializeAsync<T>(stream, cancellationToken).ConfigureAwait(false);
 
             if (configuration == null)
                 throw new InvalidOperationException("Configuration should not be null");
@@ -93,7 +91,13 @@ namespace Plugin.SettingsFile
             return configuration;
         }
 
-        private async Task<T> InitializeAsync<T>(CancellationToken cancellationToken) where T : class
+        public static async Task<T> GetAsync<T>(Task<Stream> stream)
+            where T : class
+        {
+            return await DeserializeAsync<T>(stream, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private static async Task<T> DeserializeAsync<T>(Task<Stream> streamAsync, CancellationToken cancellationToken) where T : class
         {
             if (_initialized)
                 return null;
@@ -105,7 +109,23 @@ namespace Plugin.SettingsFile
                 if (_initialized)
                     return null;
 
-                var configuration = await ReadAsync<T>().ConfigureAwait(false);
+                var stream = await streamAsync.ConfigureAwait(false);
+
+                if (stream == null || !stream.CanRead)
+                    return default(T);
+
+                T configuration = null;
+
+                using (var sr = new StreamReader(stream))
+                {
+                    using (var jtr = new Newtonsoft.Json.JsonTextReader(sr))
+                    {
+                        var js = new Newtonsoft.Json.JsonSerializer();
+                        configuration = js.Deserialize<T>(jtr);
+                    }
+                }
+
+                //var configuration = await ReadAsync<T>().ConfigureAwait(false);
                 _initialized = true;
                 //_configuration = configuration;
                 return configuration;
@@ -116,29 +136,29 @@ namespace Plugin.SettingsFile
             }
         }
 
-        private async Task<T> ReadAsync<T>() where T : class
-        {
-            //using (var streamProvider = _factory.Create())
-            using (var stream = await settingsFile.GetStreamAsync().ConfigureAwait(false))
-            {
-                var configuration = Deserialize<T>(stream);
-                return configuration;
-            }
-        }
+        //private static async Task<T> ReadAsync<T>() where T : class
+        //{
+        //    //using (var streamProvider = _factory.Create())
+        //    using (var stream = await settingsFile.GetStreamAsync().ConfigureAwait(false))
+        //    {
+        //        var configuration = Deserialize<T>(stream);
+        //        return configuration;
+        //    }
+        //}
 
-        private T Deserialize<T>(Stream stream)
-        {
-            if (stream == null || !stream.CanRead)
-                return default(T);
+        //private static T Deserialize<T>(Stream stream)
+        //{
+        //    if (stream == null || !stream.CanRead)
+        //        return default(T);
 
-            using (var sr = new StreamReader(stream))
-            using (var jtr = new Newtonsoft.Json.JsonTextReader(sr))
-            {
-                var js = new Newtonsoft.Json.JsonSerializer();
-                var value = js.Deserialize<T>(jtr);
-                return value;
-            }
-        }
+        //    using (var sr = new StreamReader(stream))
+        //    using (var jtr = new Newtonsoft.Json.JsonTextReader(sr))
+        //    {
+        //        var js = new Newtonsoft.Json.JsonSerializer();
+        //        var value = js.Deserialize<T>(jtr);
+        //        return value;
+        //    }
+        //}
     }
 
 }

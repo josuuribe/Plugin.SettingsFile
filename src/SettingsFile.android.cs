@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Content.Res;
 using Plugin.CurrentActivity;
+using System.Threading;
 
 namespace Plugin.SettingsFile
 {
@@ -26,7 +27,17 @@ namespace Plugin.SettingsFile
             _contextProvider = CrossCurrentActivity.Current.AppContext;
         }
 
-        public Task<Stream> GetStreamAsync()
+        public Task<T> GetConfiguration<T>() where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
+        }
+
+        public Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class
+        {
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
+        }
+
+        private Task<Stream> GetStreamAsync()
         {
             ReleaseUnmanagedResources();
 
@@ -47,7 +58,7 @@ namespace Plugin.SettingsFile
         {
             ReleaseUnmanagedResources();
             GC.SuppressFinalize(this);
-        }
+        }        
 
         ~SettingsFileImplementation()
         {
