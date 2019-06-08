@@ -27,12 +27,12 @@ namespace Plugin.SettingsFile
             _contextProvider = CrossCurrentActivity.Current.AppContext;
         }
 
-        public Task<T> GetConfiguration<T>() where T : class
+        public Task<T> GetConfigurationAsync<T>() where T : class
         {
             return ConfigurationManager.GetAsync<T>(GetStreamAsync());
         }
 
-        public Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class
+        public Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class
         {
             return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
         }

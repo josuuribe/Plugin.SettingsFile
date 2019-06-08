@@ -20,12 +20,12 @@ namespace Plugin.SettingsFile
 
         private const string ConfigurationFilePath = "ms-appx:///Assets/config.json";
 
-        public Task<T> GetConfiguration<T>(CancellationToken cancellationToken) where T : class
+        public Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class
         {
             return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
         }
 
-        public Task<T> GetConfiguration<T>() where T : class
+        public Task<T> GetConfigurationAsync<T>() where T : class
         {
             return ConfigurationManager.GetAsync<T>(GetStreamAsync());
         }
