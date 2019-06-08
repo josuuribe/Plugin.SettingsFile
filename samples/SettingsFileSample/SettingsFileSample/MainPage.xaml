@@ -6,12 +6,15 @@
 
     <StackLayout>
         <!-- Place new controls here -->
-        <Label Text="Base url" />
         <Label
            x:Name="lUrl"
            Text="Empty!" 
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
+        <Button 
+            Text="Push"
+            x:Name="bPush"
+            Clicked="Button_Clicked"></Button>
     </StackLayout>
 
 </ContentPage>
