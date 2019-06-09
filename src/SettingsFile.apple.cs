@@ -13,24 +13,19 @@ namespace Plugin.SettingsFile
     /// </summary>
     public class SettingsFileImplementation : ISettingsFile
     {
-        private const string ConfigurationFilePath = "Assets/config.json";
+        //private const string ConfigurationFilePath = "Assets/config.json";
 
         private Stream _readingStream;
 
-        public Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class
+        public Task<T> GetConfigurationAsync<T>(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(file, cancellationToken));
         }
 
-        public Task<T> GetConfigurationAsync<T>() where T : class
-        {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
-        }
-
-        private Task<Stream> GetStreamAsync()
+        private Task<Stream> GetStreamAsync(string file, CancellationToken cancellationToken)
         {
             ReleaseUnmanagedResources();
-            _readingStream = new FileStream(ConfigurationFilePath, FileMode.Open, FileAccess.Read);
+            _readingStream = new FileStream($@"Assets/{file}", FileMode.Open, FileAccess.Read);
 
             return Task.FromResult(_readingStream);
         }

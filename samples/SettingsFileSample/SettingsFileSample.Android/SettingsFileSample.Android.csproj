@@ -49,9 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Plugin.SettingsFile">
-      <Version>1.0.0.6</Version>
-    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="3.4.0.1008975" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2.1" />
@@ -60,13 +57,13 @@
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettings.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\global.json" />
+    <AndroidAsset Include="Assets\config.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -97,6 +94,10 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\SettingsFile.csproj">
+      <Project>{3e0cf366-d5d4-4189-b295-42a6012bcc50}</Project>
+      <Name>SettingsFile</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SettingsFileSample\SettingsFileSample.csproj">
       <Project>{E36DB8F3-D414-4F99-896A-A58A50664FF0}</Project>
       <Name>SettingsFileSample</Name>

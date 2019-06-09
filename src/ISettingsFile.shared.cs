@@ -5,9 +5,7 @@ namespace Plugin.SettingsFile
 {
     public interface ISettingsFile
     {
-        //Task<T> GetAsync<T>(CancellationToken cancellationToken) where T : class;
-        Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class;
-        Task<T> GetConfigurationAsync<T>() where T : class;
+        Task<T> GetConfigurationAsync<T>(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken)) where T : class;
     }
 
     /*

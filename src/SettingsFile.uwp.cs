@@ -18,25 +18,20 @@ namespace Plugin.SettingsFile
         private IRandomAccessStreamWithContentType _inputStream;
         private Stream _readingStream;
 
-        private const string ConfigurationFilePath = "ms-appx:///Assets/config.json";
+        //private const string ConfigurationFilePath = "ms-appx:///Assets/config.json";
 
-        public Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class
+        public Task<T> GetConfigurationAsync<T>(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(file, cancellationToken));
         }
 
-        public Task<T> GetConfigurationAsync<T>() where T : class
-        {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
-        }
-
-        private async Task<Stream> GetStreamAsync()
+        private async Task<Stream> GetStreamAsync(string file, CancellationToken cancellationToken)
         {
             ReleaseUnmanagedResources();
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(ConfigurationFilePath));
+            var fileApp = await StorageFile.GetFileFromApplicationUriAsync(new Uri($@"ms-appx:///Assets//{file}"));
 
-            _inputStream = await file.OpenReadAsync();
+            _inputStream = await fileApp.OpenReadAsync();
             _readingStream = _inputStream.AsStreamForRead();
 
             return _readingStream;

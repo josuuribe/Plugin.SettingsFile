@@ -14,7 +14,7 @@ namespace SettingsFileSample.Droid
     [Activity(Label = "SettingsFileSample", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected async override void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
@@ -24,6 +24,9 @@ namespace SettingsFileSample.Droid
             LoadApplication(new App());
 
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
+
+            string url = (await CrossSettingsFile.Current.GetConfigurationAsync<AppSettings>()).BaseUrl;
+
         }
     }
 }

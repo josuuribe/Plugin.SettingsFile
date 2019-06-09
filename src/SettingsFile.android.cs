@@ -16,7 +16,7 @@ namespace Plugin.SettingsFile
     /// </summary>
     public class SettingsFileImplementation : ISettingsFile
     {
-        private const string ConfigurationFilePath = "config.json";
+        //private const string ConfigurationFilePath = "config.json";
 
         private readonly Context _contextProvider;
 
@@ -27,23 +27,18 @@ namespace Plugin.SettingsFile
             _contextProvider = CrossCurrentActivity.Current.AppContext;
         }
 
-        public Task<T> GetConfigurationAsync<T>() where T : class
+        public Task<T> GetConfigurationAsync<T>(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync());
+            return ConfigurationManager.GetAsync<T>(GetStreamAsync(file, cancellationToken));
         }
 
-        public Task<T> GetConfigurationAsync<T>(CancellationToken cancellationToken) where T : class
-        {
-            return ConfigurationManager.GetAsync<T>(GetStreamAsync(), cancellationToken);
-        }
-
-        private Task<Stream> GetStreamAsync()
+        private Task<Stream> GetStreamAsync(string file, CancellationToken cancellationToken)
         {
             ReleaseUnmanagedResources();
 
             AssetManager assets = _contextProvider.Assets;
 
-            _readingStream = assets.Open(ConfigurationFilePath);
+            _readingStream = assets.Open(file);
 
             return Task.FromResult(_readingStream);
         }
@@ -58,7 +53,9 @@ namespace Plugin.SettingsFile
         {
             ReleaseUnmanagedResources();
             GC.SuppressFinalize(this);
-        }        
+        }
+
+
 
         ~SettingsFileImplementation()
         {

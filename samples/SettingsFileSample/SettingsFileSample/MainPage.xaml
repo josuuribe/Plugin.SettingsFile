@@ -11,10 +11,6 @@
            Text="Empty!" 
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
-        <Button 
-            Text="Push"
-            x:Name="bPush"
-            Clicked="Button_Clicked"></Button>
     </StackLayout>
 
 </ContentPage>

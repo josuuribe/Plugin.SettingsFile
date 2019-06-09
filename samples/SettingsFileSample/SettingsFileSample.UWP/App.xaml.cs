@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.SettingsFile;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,9 +38,9 @@ namespace SettingsFileSample.UWP
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
-
+            string url = (await CrossSettingsFile.Current.GetConfigurationAsync<AppSettings>()).BaseUrl;
 
             Frame rootFrame = Window.Current.Content as Frame;
 
