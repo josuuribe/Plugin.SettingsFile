@@ -19,7 +19,7 @@ namespace Plugin.SettingsFile
         public static bool IsSupported => implementation.Value == null ? false : true;
 
         /// <summary>
-        /// Current plugin implementation to use
+        /// Current plugin implementation to use.
         /// </summary>
         public static ISettingsFile<T> Current
         {

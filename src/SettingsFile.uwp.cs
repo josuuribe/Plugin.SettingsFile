@@ -10,9 +10,6 @@ using System.Threading;
 
 namespace Plugin.SettingsFile
 {
-    /// <summary>
-    /// Interface for SettingsFile
-    /// </summary>
     public class SettingsFileImplementation<T> : ISettingsFile<T>
         where T : class
     {
