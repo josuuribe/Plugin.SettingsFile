@@ -3,21 +3,10 @@ using System.Threading.Tasks;
 
 namespace Plugin.SettingsFile
 {
-    public interface ISettingsFile
+    public interface ISettingsFile<T>
+         where T : class
     {
-        Task<T> GetConfigurationAsync<T>(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken)) where T : class;
+        Task<T> LoadAsync(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken));
+        T Get();
     }
-
-    /*
-    public interface IConfigurationStreamProvider : IDisposable
-    {
-        Task<Stream> GetStreamAsync();
-    }
-    
-
-    public interface IConfigurationStreamProviderFactory
-    {
-        IConfigurationStreamProvider Create();
-    }
-    */
 }
