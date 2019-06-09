@@ -44,5 +44,10 @@ Get configuration:
 AppSettings configuration = CrossSettingsFile<AppSettings>.Current.Get();
 ```
 
+#### Contributors
+Main code thanks to [John Thiriet](https://johnthiriet.com/)
+
+Thanks!
+
 #### License
 Licensed under main repo license(MIT)
