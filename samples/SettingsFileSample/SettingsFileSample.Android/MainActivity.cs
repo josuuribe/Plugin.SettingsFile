@@ -25,7 +25,9 @@ namespace SettingsFileSample.Droid
 
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
 
-            string url = (await CrossSettingsFile.Current.GetConfigurationAsync<AppSettings>()).BaseUrl;
+            string url1 = (await CrossSettingsFile<AppSettings>.Current.LoadAsync()).BaseUrl;
+
+            string url2 = CrossSettingsFile< AppSettings>.Current.Get().BaseUrl;
 
         }
     }

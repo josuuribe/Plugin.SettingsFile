@@ -40,7 +40,9 @@ namespace SettingsFileSample.UWP
         /// <param name="e">Details about the launch request and process.</param>
         protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            string url = (await CrossSettingsFile.Current.GetConfigurationAsync<AppSettings>()).BaseUrl;
+            string url1 = (await CrossSettingsFile<AppSettings>.Current.LoadAsync()).BaseUrl;
+
+            string url2 = CrossSettingsFile<AppSettings>.Current.Get().BaseUrl;
 
             Frame rootFrame = Window.Current.Content as Frame;
 
