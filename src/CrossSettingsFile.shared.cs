@@ -49,8 +49,6 @@ namespace Plugin.SettingsFile
     {
         private static readonly SemaphoreSlim semaphoreSlim;
 
-        private static readonly ISettingsFile<T> settingsFile = null;
-
         private static bool initialized;
 
         private static T configuration = default(T);
