@@ -12,7 +12,7 @@ Simple cross platform plugin to save settings in a configuration file.
 |Platform|Version|
 | ------------------- | :-----------: |
 |Xamarin.iOS|iOS 10+|
-|Xamarin.Android|API 27+|
+|Xamarin.Android|API 19+|
 |Windows 10 UWP|10+|
 
 *See platform notes below
