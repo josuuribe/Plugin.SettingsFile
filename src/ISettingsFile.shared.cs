@@ -1,25 +1,22 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Plugin.SettingsFile
 {
-    public interface ISettingsFile
+    public interface ISettingsFile<T>
+         where T : class
     {
-        //Task<T> GetAsync<T>(CancellationToken cancellationToken) where T : class;
-        Task<Stream> GetStreamAsync();
+        /// <summary>
+        /// Load a settings file asynchronusly.
+        /// </summary>
+        /// <param name="file">File name, by defaut 'config.json'.</param>
+        /// <param name="cancellationToken">Cancellation token to be used, by defaut 'config.json'.</param>
+        /// <returns>Configuration object.</returns>
+        Task<T> LoadAsync(string file = "config.json", CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Returns a configuration object.
+        /// </summary>
+        /// <returns></returns>
+        T Get();
     }
-
-    /*
-    public interface IConfigurationStreamProvider : IDisposable
-    {
-        Task<Stream> GetStreamAsync();
-    }
-    
-
-    public interface IConfigurationStreamProviderFactory
-    {
-        IConfigurationStreamProvider Create();
-    }
-    */
 }

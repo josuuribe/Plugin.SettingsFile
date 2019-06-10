@@ -1,33 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using Plugin.SettingsFile;
 
 namespace Plugin.SettingsFile
 {
-    /// <summary>
-    /// Interface for SettingsFile
-    /// </summary>
-    public class SettingsFileImplementation : ISettingsFile
+    public class SettingsFileImplementation<T> : ISettingsFile<T>
+        where T : class
     {
-        private const string ConfigurationFilePath = "Assets/config.json";
+        private Stream readingStream;
 
-        private Stream _readingStream;
+        public Task<T> LoadAsync(string file = "config.json", CancellationToken cancellationToken = default)
+        {
+            return ConfigurationManager<T>.LoadAsync(GetStreamAsync(file), cancellationToken);
+        }
 
-        public Task<Stream> GetStreamAsync()
+        public T Get()
+        {
+            return ConfigurationManager<T>.Get();
+        }
+
+        private Task<Stream> GetStreamAsync(string file)
         {
             ReleaseUnmanagedResources();
-            _readingStream = new FileStream(ConfigurationFilePath, FileMode.Open, FileAccess.Read);
+            readingStream = new FileStream($@"Assets/{file}", FileMode.Open, FileAccess.Read);
 
-            return Task.FromResult(_readingStream);
+            return Task.FromResult(readingStream);
         }
 
         private void ReleaseUnmanagedResources()
         {
-            _readingStream?.Dispose();
-            _readingStream = null;
+            readingStream?.Dispose();
+            readingStream = null;
         }
 
         public void Dispose()

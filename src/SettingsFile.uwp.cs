@@ -6,38 +6,45 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Plugin.SettingsFile;
 using Windows.Storage;
+using System.Threading;
 
 namespace Plugin.SettingsFile
 {
-    /// <summary>
-    /// Interface for SettingsFile
-    /// </summary>
-    public class SettingsFileImplementation : ISettingsFile
+    public class SettingsFileImplementation<T> : ISettingsFile<T>
+        where T : class
     {
-        private IRandomAccessStreamWithContentType _inputStream;
-        private Stream _readingStream;
+        private IRandomAccessStreamWithContentType inputStream;
+        private Stream readingStream;
 
-        private const string ConfigurationFilePath = "ms-appx:///Assets/config.json";
+        public Task<T> LoadAsync(string file = "config.json", CancellationToken cancellationToken = default)
+        {
+            return ConfigurationManager<T>.LoadAsync(GetStreamAsync(file), cancellationToken);
+        }
 
-        public async Task<Stream> GetStreamAsync()
+        public T Get()
+        {
+            return ConfigurationManager<T>.Get();
+        }
+
+        private async Task<Stream> GetStreamAsync(string file)
         {
             ReleaseUnmanagedResources();
 
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(ConfigurationFilePath));
+            var fileApp = await StorageFile.GetFileFromApplicationUriAsync(new Uri($@"ms-appx:///Assets//{file}"));
 
-            _inputStream = await file.OpenReadAsync();
-            _readingStream = _inputStream.AsStreamForRead();
+            inputStream = await fileApp.OpenReadAsync();
+            readingStream = inputStream.AsStreamForRead();
 
-            return _readingStream;
+            return readingStream;
         }
 
         private void ReleaseUnmanagedResources()
         {
-            _inputStream?.Dispose();
-            _readingStream?.Dispose();
+            inputStream?.Dispose();
+            readingStream?.Dispose();
 
-            _inputStream = null;
-            _readingStream = null;
+            inputStream = null;
+            readingStream = null;
         }
 
         public void Dispose()

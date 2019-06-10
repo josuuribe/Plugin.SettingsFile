@@ -1,46 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using Android.App;
-using System.Threading.Tasks;
-using Android.Content;
+﻿using Android.Content;
 using Android.Content.Res;
 using Plugin.CurrentActivity;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Plugin.SettingsFile
 {
-    /// <summary>
-    /// Interface for SettingsFile
-    /// </summary>
-    public class SettingsFileImplementation : ISettingsFile
+    public class SettingsFileImplementation<T> : ISettingsFile<T>
+        where T : class
     {
-        private const string ConfigurationFilePath = "config.json";
+        private readonly Context contextProvider;
 
-        private readonly Context _contextProvider;
-
-        private Stream _readingStream;
+        private Stream readingStream;
 
         public SettingsFileImplementation()
         {
-            _contextProvider = CrossCurrentActivity.Current.AppContext;
+            contextProvider = CrossCurrentActivity.Current.AppContext;
         }
 
-        public Task<Stream> GetStreamAsync()
+        public Task<T> LoadAsync(string file = "config.json", CancellationToken cancellationToken = default)
+        {
+            return ConfigurationManager<T>.LoadAsync(GetStreamAsync(file), cancellationToken);
+        }
+
+        public T Get()
+        {
+            return ConfigurationManager<T>.Get();
+        }
+
+        private Task<Stream> GetStreamAsync(string file)
         {
             ReleaseUnmanagedResources();
 
-            AssetManager assets = _contextProvider.Assets;
+            AssetManager assets = contextProvider.Assets;
 
-            _readingStream = assets.Open(ConfigurationFilePath);
+            readingStream = assets.Open(file);
 
-            return Task.FromResult(_readingStream);
+            return Task.FromResult(readingStream);
         }
 
         private void ReleaseUnmanagedResources()
         {
-            _readingStream?.Dispose();
-            _readingStream = null;
+            readingStream?.Dispose();
+            readingStream = null;
         }
 
         public void Dispose()
