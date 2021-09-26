@@ -1,0 +1,121 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net6.0-ios;net6.0-android;net6.0-maccatalyst</TargetFrameworks>
+		<AssemblyName>Plugin.Maui.SettingsFile</AssemblyName>
+		<RootNamespace>Plugin.Maui.SettingsFile</RootNamespace>
+		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+		<PackageId>Plugin.SettingsFile</PackageId>
+		<UseMaui>True</UseMaui>
+
+		<Product>Plugin.Maui.SettingsFile</Product>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+		<Version>1.0.0.0</Version>
+		<PackOnBuild>true</PackOnBuild>
+		<NeutralLanguage></NeutralLanguage>
+		<LangVersion>default</LangVersion>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+
+		<LangVersion>latest</LangVersion>
+
+		<PackageProjectUrl>https://github.com/josuuribe/Plugin.SettingsFile</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/josuuribe/Plugin.SettingsFile</RepositoryUrl>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageIconUrl>https://josuuribe.github.io/Plugin.SettingsFile/images/icon.ico</PackageIconUrl>
+		<PackageTags>windows, ios, android, maui, plugin, SettingsFile</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<Title>SettingsFile Plugin for Xamarin and Windows</Title>
+		<Summary>This plugin allows to create a settings file to be used in iOS, Android, UWP, very useful for DevOps processes.</Summary>
+		<Description>Setting file for Xamarin projects in json format.</Description>
+
+		<Owners>Josu Uribe</Owners>
+		<Authors>Josu Uribe</Authors>
+		<Copyright>Copyright 2021</Copyright>
+		<Company>RaraAvis</Company>
+		<RepositoryType>Git</RepositoryType>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) and '$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks);net6.0-windows10.0.19041</TargetFrameworks> -->
+		<TargetPlatformMinVersion Condition="$(TargetFramework.Contains('-windows'))">10.0.17763.0</TargetPlatformMinVersion>
+		<SingleProject>true</SingleProject>
+	</PropertyGroup>
+	
+	<PropertyGroup Label="SourceLink">
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+	
+	<ItemGroup>
+	  <Compile Include="CrossSettingsFile.cs" />
+	  <Compile Include="ISettingsFile.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta2-19270-01">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+	</ItemGroup>	
+	
+	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0-experimental1" />
+	</ItemGroup>	
+	
+	<ItemGroup>
+	  <Folder Include="Platforms\MacCatalyst\" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
+	  <PackageReference Include="Plugin.Maui.CurrentActivity">
+	    <Version>1.0.0.61</Version>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' OR $(TargetFramework.StartsWith('netstandard'))">
+		<Compile Include="**\*.netstandard.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.netstandard.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $(TargetFramework.Contains('-windows')) ">
+		<Compile Include="**\*.uwp.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.uwp.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetPlatformIdentifier)' == 'android' ">
+		<Compile Include="**\*.android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.android.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<AndroidResource Include="Resources\xml\*.xml" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst' ">
+		<Compile Include="**\*.ios.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.ios.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetPlatformIdentifier)' == 'maccatalyst' ">
+		<Compile Include="**\*.maccatalyst.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.maccatalyst.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetPlatformIdentifier)' == 'tvos' ">
+		<Compile Include="**\*.tvos.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Include="**\*.tvos.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>	
+	
+</Project>
