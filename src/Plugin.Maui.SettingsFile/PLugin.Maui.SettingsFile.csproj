@@ -9,6 +9,7 @@
 		<UseMaui>True</UseMaui>
 
 		<Product>Plugin.Maui.SettingsFile</Product>
+		<Product>Plugin.Maui.SettingsFile</Product>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
 		<Version>1.0.0.0</Version>
@@ -26,9 +27,9 @@
 		<PackageTags>windows, ios, android, maui, plugin, SettingsFile</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-		<Title>SettingsFile Plugin for Xamarin and Windows</Title>
+		<Title>SettingsFile Plugin for Maui and Windows</Title>
 		<Summary>This plugin allows to create a settings file to be used in iOS, Android, UWP, very useful for DevOps processes.</Summary>
-		<Description>Setting file for Xamarin projects in json format.</Description>
+		<Description>Setting file for Maui projects in json format.</Description>
 
 		<Owners>Josu Uribe</Owners>
 		<Authors>Josu Uribe</Authors>
@@ -99,7 +100,6 @@
 		<Compile Include="**\*.android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 		<Compile Include="**\*.android.*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 		<AndroidResource Include="Resources\xml\*.xml" />
-		<PackageReference Include="Xamarin.AndroidX.Browser" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetPlatformIdentifier)' == 'ios' Or '$(TargetPlatformIdentifier)' == 'maccatalyst' ">
